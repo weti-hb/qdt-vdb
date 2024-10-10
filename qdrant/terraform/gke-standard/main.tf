@@ -16,7 +16,7 @@
 module "network" {
   source         = "../modules/network"
   project_id     = var.project_id
-  region         = var.region
+  zone           = var.zone  # region         = var.region
   cluster_prefix = var.cluster_prefix
 }
 
