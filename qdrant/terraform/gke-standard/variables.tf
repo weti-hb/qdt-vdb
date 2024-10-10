@@ -18,7 +18,10 @@ variable "project_id" {
   type        = string
 }
 
-
+variable "region" {
+  description = "The region where resources will be created"
+  type        = string
+}
 
 variable "zone" {
   description = "The zone to host the cluster in"
