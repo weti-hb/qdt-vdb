@@ -20,10 +20,6 @@ variable "zone" {   # region
   description = "The zone to host the cluster in"
 }
 
-variable "region" {
-  description = "The region where resources will be created"
-  type        = string
-}
 
 variable "cluster_prefix" {
   description = "The prefix for all cluster resources"

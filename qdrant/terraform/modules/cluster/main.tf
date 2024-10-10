@@ -19,8 +19,7 @@ module "qdrant_cluster" {
   project_id                    = var.project_id
   name                          = "${var.cluster_prefix}-cluster"
   regional                      = false
-  region                        = var.region
-  zones                         = [var.zone]
+  zone                          = var.zone
   network                       = var.network
   subnetwork                    = var.subnetwork
   ip_range_pods                 = "k8s-pod-range"
@@ -38,7 +37,7 @@ module "qdrant_cluster" {
   initial_node_count            = 1
   kubernetes_version            = "latest"
   release_channel               = "RAPID"
-  stateful_ha                   = true
+  stateful_ha                   = false
 
   cluster_resource_labels = {
     name      = "${var.cluster_prefix}-cluster"
