@@ -20,7 +20,7 @@ module "qdrant_cluster" {
   name                          = "${var.cluster_prefix}-cluster"
   regional                      = false
   #region                        = var.region
-  zone                          = var.zone
+  zones                          = [var.zone]
   network                       = var.network
   subnetwork                    = var.subnetwork
   ip_range_pods                 = "k8s-pod-range"
