@@ -79,7 +79,7 @@ module "cloud_router" {
   name    = "${var.cluster_prefix}-nat-router"
   network = module.gcp-network.network_name
   zones   = [var.zone]
-  #region  = var.region
+  region  = var.region
   nats = [{
     name = "${var.cluster_prefix}-nat"
   }]
