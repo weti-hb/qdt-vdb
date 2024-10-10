@@ -19,7 +19,7 @@ module "qdrant_cluster" {
   project_id                    = var.project_id
   name                          = "${var.cluster_prefix}-cluster"
   regional                      = false
-  #region                        = var.region
+  region                        = var.region
   zone                          = var.zone
   network                       = var.network
   subnetwork                    = var.subnetwork
