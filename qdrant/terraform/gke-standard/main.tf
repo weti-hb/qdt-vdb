@@ -26,10 +26,10 @@ module "qdrant_cluster" {
   source                   = "../modules/cluster"
   project_id               = var.project_id
   zone                     = var.zone
- 
   cluster_prefix           = var.cluster_prefix
   network                  = module.network.network_name
   subnetwork               = module.network.subnet_name
+  regional                 = false
 
   node_pools = [
     {
