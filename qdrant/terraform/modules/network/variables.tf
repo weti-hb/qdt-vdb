@@ -29,3 +29,8 @@ variable "cluster_prefix" {
   description = "The prefix for all cluster resources"
 }
 
+variable "zones" {
+  description = "The zones to host the cluster in"
+  type        = list(string)
+  default     = []
+}
