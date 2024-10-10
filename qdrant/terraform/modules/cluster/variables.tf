@@ -18,6 +18,13 @@ variable "project_id" {
 
 variable "zone" {
   description = "The zone to host the cluster in"
+  type        = string
+}
+
+variable "zones" {
+  description = "The zones to host the cluster in"
+  type        = list(string)
+  default     = []
 }
 
 variable "network" {

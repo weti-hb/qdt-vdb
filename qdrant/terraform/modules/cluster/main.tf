@@ -36,7 +36,7 @@ module "qdrant_cluster" {
   kubernetes_version            = "latest"
   release_channel               = "RAPID"
   stateful_ha                   = false
-  zone                          = var.zone
+  zones                         = [var.zone]
 
   cluster_resource_labels = {
     name      = "${var.cluster_prefix}-cluster"
