@@ -26,6 +26,7 @@ module "qdrant_cluster" {
   source                   = "../modules/cluster"
   project_id               = var.project_id
   zone                     = var.zone # Changed from region to zone
+  region                   = var.region
   cluster_prefix           = var.cluster_prefix
   network                  = module.network.network_name
   subnetwork               = module.network.subnet_name
