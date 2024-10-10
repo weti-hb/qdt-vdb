@@ -20,6 +20,11 @@ variable "zone" {
   description = "The zone to host the cluster in"
 }
 
+variable "region" {
+  description = "The region where resources will be created"
+  type        = string
+}
+
 variable "network" {
   description = "The VPC network to host the cluster in"
 }
