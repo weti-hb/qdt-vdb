@@ -23,6 +23,11 @@ variable "region" {
   type        = string
 }
 
+variable "zone" {
+  description = "The zone to host the cluster in"
+  type        = string
+}
+
 variable "cluster_prefix" {
   description = "The prefix for all cluster resources"
   default     = "qdrant"

@@ -74,7 +74,7 @@ podDisruptionBudget:
 persistence:
   accessModes: ["ReadWriteOnce"]
   size: 5Gi #10Gi
-  storageClassName: ha-regional
+  storageClassName: standard #before ha-regional to make it available in more than one zone per region
 
 apiKey: true
 

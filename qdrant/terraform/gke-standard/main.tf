@@ -24,7 +24,7 @@ module "network" {
 module "qdrant_cluster" {
   source                   = "../modules/cluster"
   project_id               = var.project_id
-  region                   = var.region
+  zone                     = var.zone # Changed from region to zone
   cluster_prefix           = var.cluster_prefix
   network                  = module.network.network_name
   subnetwork               = module.network.subnet_name
@@ -62,7 +62,7 @@ module "qdrant_cluster" {
 }
 
 output "kubectl_connection_command" {
-  value       = "gcloud container clusters get-credentials ${var.cluster_prefix}-cluster --region ${var.region}"
+  value       = "gcloud container clusters get-credentials ${var.cluster_prefix}-cluster --zone ${var.zone}"
   description = "Connection command"
 }
 # [END gke_qdrant_standard_private_regional_cluster]

@@ -24,7 +24,7 @@ module "gcp-network" {
     {
       subnet_name           = "${var.cluster_prefix}-private-subnet"
       subnet_ip             = "10.10.0.0/24"
-      subnet_region         = var.region
+      subnet_region         = var.zone    # before region
       subnet_private_access = true
       subnet_flow_logs      = "true"
     }
