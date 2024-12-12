@@ -18,6 +18,13 @@ variable "project_id" {
 
 variable "region" {
   description = "The region to host the cluster in"
+  default     = ["europe-west1"]
+}
+
+variable "zones" {
+  type        = list(string)
+  description = "List of zones for the zonal GKE cluster"
+  default     = ["europe-west1-b"] # Default to one zone, extendable
 }
 
 variable "network" {
