@@ -38,14 +38,14 @@ module "qdrant_cluster" {
   enable_private_nodes          = true
   master_ipv4_cidr_block        = "172.16.0.0/28"
   network_policy                = true
-  #logging_enabled_components    = ["SYSTEM_COMPONENTS", "WORKLOADS"]
-  #monitoring_enabled_components = ["SYSTEM_COMPONENTS"]
+  logging_enabled_components    = ["SYSTEM_COMPONENTS", "WORKLOADS"]
+  monitoring_enabled_components = ["SYSTEM_COMPONENTS"]
   enable_cost_allocation        = true
   deletion_protection           = false
   initial_node_count            = 1
   kubernetes_version            = "latest"
   release_channel               = "RAPID"
-  stateful_ha                   = false
+  stateful_ha                   = true
 
   # cluster_resource_labels section assigns labels to the cluster resources for identification and management purposes
   cluster_resource_labels = {
