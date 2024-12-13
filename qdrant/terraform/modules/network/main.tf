@@ -14,6 +14,8 @@
 
 # [START gke_qdrant_vpc_multi_region_network]
 module "gcp-network" {
+  # https://registry.terraform.io/modules/terraform-google-modules/network/google/latest
+  # https://github.com/terraform-google-modules/terraform-google-network
   source  = "terraform-google-modules/network/google"
   version = "~> 8.1.0"
 
@@ -34,6 +36,7 @@ module "gcp-network" {
     ("${var.cluster_prefix}-private-subnet") = [
       {
         range_name    = "k8s-pod-range"
+        # CIDR stands for Classless Inter-Domain Routing. It is a method for allocating IP addresses and IP routing.
         ip_cidr_range = "10.48.0.0/20"
       },
       {
@@ -51,7 +54,7 @@ module "firewall_rules" {
   network_name = module.gcp-network.network_name
 
   ingress_rules = [{
-    name                    = "allow-webhook"
+    name                    = "allow-webhook-timo"
     description             = "open webhook port for statefulha operator"
     source_ranges           = ["172.16.0.0/28",]
     allow = [{
