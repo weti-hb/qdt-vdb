@@ -16,7 +16,7 @@
 kind: HighAvailabilityApplication
 apiVersion: ha.gke.io/v1
 metadata:
-  name: timo-qdrant-database
+  name: timo-qdrant-database3
   namespace: timo-qdrant
 spec:
   resourceSelection:
