@@ -43,11 +43,11 @@ livenessProbe:
 # Qdrant pods, ensuring they have the necessary resources to operate efficiently.
 resources:
   limits:
-    cpu: "0.5"
-    memory: 1Gi
+    cpu: "1"
+    memory: 2Gi
   requests:
-    cpu: "0.5"
-    memory: 1Gi
+    cpu: "1"
+    memory: 2Gi
 
 # The tolerations and affinity sections configure the scheduling of the Qdrant pods. The tolerations allow the pods 
 # to be scheduled on nodes with specific taints, while the affinity rules prefer nodes with certain labels. 
@@ -59,24 +59,16 @@ tolerations:
 
 affinity:
   nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 1
-      preference:
-        matchExpressions:
-        - key: "app.stateful/component"
-          operator: In
-          values:
-          - "qdrant"
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: topology.kubernetes.io/zone
+              operator: In
+              values:
+                - europe-west1-b
 
 # The topologySpreadConstraints ensure that the pods are evenly distributed across different zones to improve availability and fault tolerance.
-topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: "topology.kubernetes.io/zone"
-    whenUnsatisfiable: ScheduleAnyway
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/name: qdrant
-        app.kubernetes.io/instance: qdrant
+topologySpreadConstraints: []
 
 # The podDisruptionBudget is enabled with a maximum of one unavailable pod, ensuring that the deployment maintains high 
 # availability during updates or disruptions.
@@ -89,7 +81,7 @@ podDisruptionBudget:
 persistence:
   accessModes: ["ReadWriteOnce"]
   size: 10Gi
-  storageClassName: timo-ha-regional
+  storageClassName: zonal-pd-standard
 
 # The apiKey field is set to true, requiring an API key for accessing the Qdrant database. 
 apiKey: true
