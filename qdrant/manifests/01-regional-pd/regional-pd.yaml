@@ -17,12 +17,9 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 allowVolumeExpansion: true
 metadata:
-  name: ha-regional
+  name: zonal-pd-standard  # Name updated to reflect zonal PD
 parameters:
-  replication-type: regional-pd
-  type: pd-ssd
-  availability-class: regional-hard-failover
+  type: pd-standard  # Use SSD disks (you can change this to 'pd-standard' for standard disks)
 provisioner: pd.csi.storage.gke.io
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
-# [END gke_databases_qdrant_01_regional_pd_storage]
