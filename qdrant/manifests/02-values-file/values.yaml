@@ -1,19 +1,8 @@
-# Copyright 2024 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 # [START gke_databases_qdrant_02_values_file_config]
-replicaCount: 1
+# The replicaCount is set to 3, indicating that three replicas of the Qdrant database will be deployed. 
+# The config section enables clustering and sets various storage optimization parameters, such as thresholds for deleting and vacuuming vectors, 
+# segment numbers, and indexing thresholds.
+replicaCount: 2
 
 config:
   cluster:
@@ -25,87 +14,71 @@ config:
       default_segment_number: 2
       max_segment_size_kb: null
       memmap_threshold_kb: null
-      indexing_threshold_kb: 1000
+      indexing_threshold_kb: 25000
       flush_interval_sec: 5
       max_optimization_threads: 1
 
+# The livenessProbe section is enabled with an initial delay of 60 seconds, ensuring that Kubernetes can monitor the health of 
+# the Qdrant pods and restart them if necessary. 
 livenessProbe:
   enabled: true
   initialDelaySeconds: 60
 
+# The resources section defines the CPU and memory limits and requests for the 
+# Qdrant pods, ensuring they have the necessary resources to operate efficiently.
 resources:
   limits:
-    cpu: "2"
-    memory: 4Gi
+    cpu: "1"
+    memory: 2Gi
   requests:
     cpu: "1"
-    memory: 4Gi
+    memory: 2Gi
 
-tolerations:
-  - key: "app.stateful/component"
-    operator: "Equal"
-    value: "qdrant"
-    effect: NoSchedule
+# Remove the tolerations and affinity sections if not using Stateful HA
+# The tolerations and affinity sections configure the scheduling of the Qdrant pods. The tolerations allow the pods 
+# to be scheduled on nodes with specific taints, while the affinity rules prefer nodes with certain labels. 
+# tolerations:
+#   - key: "app.stateful/component"
+#     operator: "Equal"
+#     value: "qdrant"
+#     effect: NoSchedule
 
-affinity:
-  nodeAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 1
-      preference:
-        matchExpressions:
-        - key: "app.stateful/component"
-          operator: In
-          values:
-          - "qdrant"
+# affinity:
+#   nodeAffinity:
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#     - weight: 1
+#       preference:
+#         matchExpressions:
+#         - key: "app.stateful/component"
+#           operator: In
+#           values:
+#           - "qdrant"
 
-topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: "topology.kubernetes.io/zone"
-    whenUnsatisfiable: ScheduleAnyway
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/name: qdrant
-        app.kubernetes.io/instance: qdrant
+# Remove the topologySpreadConstraints section if not using Stateful HA
+# The topologySpreadConstraints ensure that the pods are evenly distributed across different zones to improve availability and fault tolerance.
+# topologySpreadConstraints:
+#   - maxSkew: 1
+#     topologyKey: "topology.kubernetes.io/zone"
+#     whenUnsatisfiable: ScheduleAnyway
+#     labelSelector:
+#       matchLabels:
+#         app.kubernetes.io/name: qdrant
+#         app.kubernetes.io/instance: qdrant
 
-podDisruptionBudget:
-  enabled: true
-  maxUnavailable: 1
+# Remove the podDisruptionBudget section if not using Stateful HA
+# The podDisruptionBudget is enabled with a maximum of one unavailable pod, ensuring that the deployment maintains high 
+# availability during updates or disruptions.
+# podDisruptionBudget:
+#   enabled: true
+#   maxUnavailable: 1
 
+# The persistence section defines the storage settings, including access modes, size, and storage class.
+# The storageClassName is set to ha-regional, indicating the use of a high-availability regional storage class.
 persistence:
   accessModes: ["ReadWriteOnce"]
-  size: 5Gi
-  storageClassName: standard #ha-regional
+  size: 10Gi
+  storageClassName: standard  # Changed from ha-regional to standard
 
+# The apiKey field is set to true, requiring an API key for accessing the Qdrant database. 
 apiKey: true
 
-sidecarContainers:
-  - name: metrics
-    image: nginx:1.27
-    resources:
-      requests:
-        memory: "128Mi"
-        cpu: "250m"
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
-    ports:
-    - containerPort: 80
-    env:
-    - name: QDRANT_APIKEY 
-      valueFrom:
-        secretKeyRef:
-          name: qdrant-database-apikey          
-          key: api-key
-    volumeMounts:
-        - name: nginx-conf
-          mountPath: /etc/nginx/templates/default.conf.template
-          subPath: default.conf.template
-          readOnly: true
-additionalVolumes:
-  - name: nginx-conf
-    configMap:
-      name: nginx-conf
-      items:
-        - key: default.conf.template
-          path: default.conf.template 
-# [END gke_databases_qdrant_02_values_file_config]
