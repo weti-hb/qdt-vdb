@@ -1,3 +1,18 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# [START gke_databases_qdrant_02_values_file_config]
 # [START gke_databases_qdrant_02_values_file_config]
 # The replicaCount is set to 3, indicating that three replicas of the Qdrant database will be deployed. 
 # The config section enables clustering and sets various storage optimization parameters, such as thresholds for deleting and vacuuming vectors, 
@@ -34,51 +49,86 @@ resources:
     cpu: "1"
     memory: 2Gi
 
-# Remove the tolerations and affinity sections if not using Stateful HA
 # The tolerations and affinity sections configure the scheduling of the Qdrant pods. The tolerations allow the pods 
 # to be scheduled on nodes with specific taints, while the affinity rules prefer nodes with certain labels. 
-# tolerations:
-#   - key: "app.stateful/component"
-#     operator: "Equal"
-#     value: "qdrant"
-#     effect: NoSchedule
+tolerations:
+  - key: "app.stateful/component"
+    operator: "Equal"
+    value: "qdrant"
+    effect: NoSchedule
 
-# affinity:
-#   nodeAffinity:
-#     preferredDuringSchedulingIgnoredDuringExecution:
-#     - weight: 1
-#       preference:
-#         matchExpressions:
-#         - key: "app.stateful/component"
-#           operator: In
-#           values:
-#           - "qdrant"
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 1
+      preference:
+        matchExpressions:
+        - key: "app.stateful/component"
+          operator: In
+          values:
+          - "qdrant"
 
-# Remove the topologySpreadConstraints section if not using Stateful HA
 # The topologySpreadConstraints ensure that the pods are evenly distributed across different zones to improve availability and fault tolerance.
-# topologySpreadConstraints:
-#   - maxSkew: 1
-#     topologyKey: "topology.kubernetes.io/zone"
-#     whenUnsatisfiable: ScheduleAnyway
-#     labelSelector:
-#       matchLabels:
-#         app.kubernetes.io/name: qdrant
-#         app.kubernetes.io/instance: qdrant
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: "topology.kubernetes.io/zone"
+    whenUnsatisfiable: ScheduleAnyway
+    labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: qdrant
+        app.kubernetes.io/instance: qdrant
 
-# Remove the podDisruptionBudget section if not using Stateful HA
 # The podDisruptionBudget is enabled with a maximum of one unavailable pod, ensuring that the deployment maintains high 
 # availability during updates or disruptions.
-# podDisruptionBudget:
-#   enabled: true
-#   maxUnavailable: 1
+podDisruptionBudget:
+  enabled: true
+  maxUnavailable: 1
 
 # The persistence section defines the storage settings, including access modes, size, and storage class.
 # The storageClassName is set to ha-regional, indicating the use of a high-availability regional storage class.
 persistence:
   accessModes: ["ReadWriteOnce"]
   size: 10Gi
-  storageClassName: standard  # Changed from ha-regional to standard
+  storageClassName: timo-ha-regional
 
 # The apiKey field is set to true, requiring an API key for accessing the Qdrant database. 
 apiKey: true
+
+# The sidecarContainers section defines an additional container named metrics that runs alongside the main Qdrant container. This sidecar 
+# container uses the nginx:1.27 image and has specific resource requests and limits. It exposes port 80 and retrieves the API key from a Kubernetes secret.
+# The volumeMounts section specifies that the sidecar container will mount a volume named nginx-conf at a specific path, with read-only access. 
+# The additionalVolumes section defines the nginx-conf volume, sourced from a Kubernetes ConfigMap named nginx-conf, 
+# which contains the NGINX configuration template.
+sidecarContainers:
+  - name: metrics
+    image: nginx:1.27
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+    - containerPort: 80
+    env:
+    - name: QDRANT_APIKEY 
+      valueFrom:
+        secretKeyRef:
+          name: qdrant-database-apikey          
+          key: api-key
+    volumeMounts:
+        - name: nginx-conf
+          mountPath: /etc/nginx/templates/default.conf.template
+          subPath: default.conf.template
+          readOnly: true
+additionalVolumes:
+  - name: nginx-conf
+    configMap:
+      name: nginx-conf
+      items:
+        - key: default.conf.template
+          path: default.conf.template 
+# [END gke_databases_qdrant_02_values_file_config]
+
 
