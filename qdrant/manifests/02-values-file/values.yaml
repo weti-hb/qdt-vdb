@@ -43,11 +43,11 @@ livenessProbe:
 # Qdrant pods, ensuring they have the necessary resources to operate efficiently.
 resources:
   limits:
-    cpu: "1"
-    memory: 2Gi
+    cpu: "0.5"
+    memory: 1Gi
   requests:
-    cpu: "1"
-    memory: 2Gi
+    cpu: "0.5"
+    memory: 1Gi
 
 # The tolerations and affinity sections configure the scheduling of the Qdrant pods. The tolerations allow the pods 
 # to be scheduled on nodes with specific taints, while the affinity rules prefer nodes with certain labels. 
