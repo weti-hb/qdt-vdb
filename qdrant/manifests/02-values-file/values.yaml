@@ -107,7 +107,7 @@ sidecarContainers:
     - name: QDRANT_APIKEY 
       valueFrom:
         secretKeyRef:
-          name: timo-qdrant-database4-apikey         
+          name: timo-qdrant-database5-apikey         
           key: api-key
     volumeMounts:
         - name: nginx-conf
