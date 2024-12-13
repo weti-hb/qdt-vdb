@@ -16,7 +16,7 @@
 kind: HighAvailabilityApplication
 apiVersion: ha.gke.io/v1
 metadata:
-  name: timo-qdrant-database3
+  name: timo-qdrant-database
   namespace: timo-qdrant
 spec:
   resourceSelection:
@@ -30,18 +30,3 @@ spec:
         afterNodeUnreachableSeconds: 20  # 60 Seconds total / Keep this if you want quick recovery within the zone
 
 # [END gke_databases_qdrant_01_regional_pd_ha_app]
-
-
-The provided YAML file is a Kubernetes manifest for configuring a high-availability application using Google's Kubernetes Engine (GKE). The file is specifically designed to set up a Qdrant database with high availability features.
-
-The file begins with licensing information, indicating that it is licensed under the Apache License, Version 2.0. This section also includes a link to the full license text and a disclaimer about the software being provided "as is" without warranties or conditions of any kind.
-
-The main part of the file is a Kubernetes custom resource definition (CRD) for a HighAvailabilityApplication. The apiVersion is ha.gke.io/v1, and the kind is HighAvailabilityApplication. The metadata section specifies the name of the application (qdrant-database) and the namespace (qdrant) where it will be deployed.
-
-The spec section contains the configuration details for the high-availability application. The resourceSelection field specifies that the resource kind to be managed is a StatefulSet, which is commonly used for stateful applications like databases.
-
-The policy section outlines the high-availability policies. The storageSettings field has a requireRegionalStorage attribute set to true, indicating that the application requires regional storage for redundancy and failover purposes. This ensures that the data is replicated across multiple zones within a region, providing higher availability and durability.
-
-The failoverSettings field defines the failover strategy. The forceDeleteStrategy is set to AfterNodeUnreachable, which means that the application will forcefully delete and recreate resources if a node becomes unreachable. The afterNodeUnreachable field specifies that the failover process should begin 20 seconds after a node becomes unreachable, with a total of 60 seconds before the failover is fully executed.
-
-Overall, this YAML file configures a high-availability setup for the Qdrant database on GKE, ensuring that the application can tolerate node failures and maintain data availability through regional storage replication.
