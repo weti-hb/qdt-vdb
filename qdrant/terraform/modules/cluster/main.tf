@@ -45,7 +45,7 @@ module "qdrant_cluster" {
   initial_node_count            = 1
   kubernetes_version            = "latest"
   release_channel               = "RAPID"
-  stateful_ha                   = false
+  stateful_ha                   = true
 
   # cluster_resource_labels section assigns labels to the cluster resources for identification and management purposes
   cluster_resource_labels = {
