@@ -17,7 +17,7 @@
 # The replicaCount is set to 3, indicating that three replicas of the Qdrant database will be deployed. 
 # The config section enables clustering and sets various storage optimization parameters, such as thresholds for deleting and vacuuming vectors, 
 # segment numbers, and indexing thresholds.
-replicaCount: 2
+replicaCount: 1
 
 config:
   cluster:
@@ -107,7 +107,7 @@ sidecarContainers:
     - name: QDRANT_APIKEY 
       valueFrom:
         secretKeyRef:
-          name: timo-qdrant-database5-apikey         
+          name: qdrant-database-apikey         
           key: api-key
     volumeMounts:
         - name: nginx-conf
