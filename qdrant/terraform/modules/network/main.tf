@@ -54,7 +54,7 @@ module "firewall_rules" {
   network_name = module.gcp-network.network_name
 
   ingress_rules = [{
-    name                    = "allow-webhook-timo"
+    name                    = "allow-webhook"
     description             = "open webhook port for statefulha operator"
     source_ranges           = ["172.16.0.0/28",]
     allow = [{
