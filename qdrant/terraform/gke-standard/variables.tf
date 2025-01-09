@@ -37,19 +37,19 @@ variable "node_machine_type" {
 
 variable "node_disk_type" {
   description = "The persistent disk type for node instances"
-  default     = "pd-ssd"
+  default     = "pd-standard" #change to pd-ssd for PRD 
   type        = string
 }
 
 variable "node_disk_size" {
   description = "The persistent disk size for node instances"
-  default     = 20
+  default     = 10
   type        = number
 }
 
 variable "autoscaling_max_count" {
   description = "Maximum node counts per zone"
-  default     = 2
+  default     = 1
   type        = number
 }
 
